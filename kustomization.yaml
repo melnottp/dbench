@@ -1,0 +1,5 @@
+resources:
+- evs-ultra.yaml
+- evs.yaml
+- obs.yaml
+- sfs.yaml
