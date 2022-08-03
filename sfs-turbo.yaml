@@ -1,12 +1,53 @@
+apiVersion: storage.k8s.io/v1
+allowVolumeExpansion: true
+kind: StorageClass
+metadata:
+  name: sfsturbo-sc-perf
+mountOptions:
+- lock
+- timeo=20
+- vers=3
+parameters:
+  csi.storage.k8s.io/csi-driver-name: sfsturbo.csi.everest.io
+  csi.storage.k8s.io/fstype: nfs
+  everest.io/archive-on-delete: "true"
+  everest.io/share-access-to: ff8ef2c5-8eec-4853-9680-425bf73f8dda
+  everest.io/share-expand-type: bandwidth
+  everest.io/share-export-location: 192.168.0.101:/sfsturbo/
+  everest.io/share-source: sfs-turbo
+  everest.io/share-volume-type: PERFORMANCE
+  everest.io/volume-as: subpath
+  everest.io/volume-id: a47d0d91-011b-42ce-8c2f-eec5ce1e2a25
+provisioner: everest-csi-provisioner
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dbench-sfs-turbo
+spec:
+  storageClassName : sfsturbo-sc-perf
+  # storageClassName: gp2
+  # storageClassName: local-storage
+  # storageClassName: ibmc-block-bronze
+  # storageClassName: ibmc-block-silver
+  # storageClassName: ibmc-block-gold
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: dbench
+  name: dbench-sfs-turbo
 spec:
   template:
     spec:
       containers:
-      - name: dbench
+      - name: dbench-sfs-turbo
         image: tellmenop/dbench:5.0
         imagePullPolicy: Always
         env:
@@ -27,6 +68,6 @@ spec:
       volumes:
       - name: dbench-pv
         persistentVolumeClaim:
-          claimName: cce-efs-import-l60ihyes-kvk6
+          claimName: dbench-sfs-turbo
   backoffLimit: 4
 

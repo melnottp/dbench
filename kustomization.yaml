@@ -3,3 +3,4 @@ resources:
 - evs.yaml
 - obs.yaml
 - sfs.yaml
+- sfs-turbo.yaml

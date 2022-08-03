@@ -27,7 +27,7 @@ spec:
   template:
     spec:
       containers:
-      - name: dbench
+      - name: dbench-obspfs
         image: tellmenop/dbench:5.0
         imagePullPolicy: IfNotPresent
         env:
